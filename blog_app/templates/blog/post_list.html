@@ -4,19 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blog - Homepage</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <h1>Blog Posts</h1>
-    <ul>
-        {% for post in posts %}
-            <li>
-                <h2><a href="#">{{ post.title }}</a></h2>
-                <p>{{ post.content|truncatewords:20 }}</p>
-                <small>By {{ post.author }} on {{ post.created_at }}</small>
-            </li>
-        {% empty %}
-            <li>No posts available.</li>
-        {% endfor %}
-    </ul>
+    <div class="container my-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Blog Posts</h1>
+            <!-- Button to add a new post -->
+            <a href="{% url 'new_post' %}" class="btn btn-primary">Add New Post</a>
+        </div>
+
+        {% if posts %}
+            <div class="row">
+                {% for post in posts %}
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ post.title }}</h5>
+                                <p class="card-text">{{ post.content|truncatewords:20 }}</p>
+                            </div>
+                            <div class="card-footer">
+                                <small class="text-muted">By {{ post.author }} on {{ post.created_at|date:"F j, Y" }}</small>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No posts available. Click "Add New Post" to get started.</p>
+        {% endif %}
+    </div>
+
+    <!-- Bootstrap JS and dependencies (optional) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
