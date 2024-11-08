@@ -38,3 +38,20 @@ def delete_post(request, pk):
         messages.success(request, "The post has been deleted successfully")
         return redirect('post_list')
     return render(request, 'blog/post_confirm_delete.html', {'post':post})
+
+# Edit post function
+def edit_post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+
+    if request.method == 'POST':
+        form = PostForm(request.POST, instance=post)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "The post has been updated successfully")
+            return redirect('post_list')
+        else:
+            messages.error(request, "There was an error updating the post")
+    else:
+        form = PostForm(instance=post)
+
+    return render(request, 'blog/post_form.html', {'form': form, 'post':post})
