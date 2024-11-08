@@ -90,7 +90,7 @@
                     messageContainer.innerHTML = `<i class="fas fa-check-circle"></i> ${data.message}`;
                     setTimeout(() => {
                         window.location.href = "{% url 'post_list' %}";  // Redirect after delay
-                    }, 1300);  // 1-second delay
+                    }, 1000);  // 1-second delay
                 } else {
                     messageContainer.classList.add("alert-danger");
                     messageContainer.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${data.message}`;

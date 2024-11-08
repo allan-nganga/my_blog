@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib import messages
 from .models import Post
 from .forms import PostForm
@@ -28,3 +28,13 @@ def new_post(request):
     else:
         form = PostForm()
     return render(request, 'blog/post_form.html', {'form':form})
+
+# Delete post Function
+def delete_post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+
+    if request.method == "POST":
+        post.delete()
+        messages.success(request, "The post has been deleted successfully")
+        return redirect('post_list')
+    return render(request, 'blog/post_confirm_delete.html', {'post':post})
