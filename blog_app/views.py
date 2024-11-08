@@ -1,4 +1,6 @@
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from .models import Post
 from .forms import PostForm
 
@@ -19,7 +21,10 @@ def new_post(request):
                 author = request.user   # Assuming the user is logged in
             )
             post.save()
-            return redirect('post_list')    # Redirect to the homepage after saving
+            return JsonResponse({"message": "Your post was created successfully!", "status": "success"}, status=200)
+            # return redirect('post_list')    # Redirect to the homepage after saving
+        else:
+            return JsonResponse({"message": "There was an error with your submission.", "status":"error"}, status=400)
     else:
         form = PostForm()
     return render(request, 'blog/post_form.html', {'form':form})

@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,9 +7,33 @@
     <title>Create New Post</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'blog/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="container my-5">
+        {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} custom-alert fade show" role="alert">
+                {% if message.tags == 'success' %}
+                    <i class="fas fa-check-circle"></i>  <!-- Success icon -->
+                {% elif message.tags == 'danger' %}
+                    <i class="fas fa-exclamation-circle"></i>  <!-- Error icon -->
+                {% elif message.tags == 'warning' %}
+                    <i class="fas fa-exclamation-triangle"></i>  <!-- Warning icon -->
+                {% elif message.tags == 'info' %}
+                    <i class="fas fa-info-circle"></i>  <!-- Info icon -->
+                {% endif %}
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
         <h2>Create a New Post</h2>
         <form method="post" novalidate>
             {% csrf_token %}
@@ -35,4 +60,48 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const form = document.querySelector("form");
+        const messageContainer = document.createElement("div");
+        messageContainer.classList.add("alert", "custom-alert", "fade", "show");
+        form.prepend(messageContainer);
+
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();  // Prevent default form submission
+
+            const formData = new FormData(form);
+
+            // Send form data using AJAX
+            fetch("{% url 'new_post' %}", {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Set message content and styling based on status
+                messageContainer.classList.remove("alert-success", "alert-danger");
+                if (data.status === "success") {
+                    messageContainer.classList.add("alert-success");
+                    messageContainer.innerHTML = `<i class="fas fa-check-circle"></i> ${data.message}`;
+                    setTimeout(() => {
+                        window.location.href = "{% url 'post_list' %}";  // Redirect after delay
+                    }, 1300);  // 1-second delay
+                } else {
+                    messageContainer.classList.add("alert-danger");
+                    messageContainer.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${data.message}`;
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                messageContainer.classList.add("alert-danger");
+                messageContainer.innerHTML = `<i class="fas fa-exclamation-circle"></i> An unexpected error occurred.`;
+            });
+        });
+    });
+</script>
 </html>
