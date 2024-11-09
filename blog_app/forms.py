@@ -1,6 +1,7 @@
 from django import forms
+from .models import Post
 
-class PostForm(forms.Form):
+class PostForm(forms.ModelForm):
     title = forms.CharField(
         label="Title", 
         max_length=200,
@@ -11,3 +12,7 @@ class PostForm(forms.Form):
         label="Content", 
         widget=forms.Textarea
     )
+
+    class Meta:
+        model = Post
+        fields = ['title', 'content']

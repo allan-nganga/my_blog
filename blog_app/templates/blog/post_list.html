@@ -6,6 +6,8 @@
     <title>Blog - Homepage</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
     <div class="container my-4">
@@ -21,17 +23,24 @@
                     <div class="col-md-6 col-lg-4 mb-4">
                         <div class="card h-100">
                             <div class="card-body">
-                                <h5 class="card-title">{{ post.title }}</h5>
+                                <h5 class="card-title">
+                                    <a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a>
+                                </h5>
                                 <p class="card-text">{{ post.content|truncatewords:20 }}</p>
                             </div>
                             <div class="card-footer">
                                 <small class="text-muted">By {{ post.author }} on {{ post.created_at|date:"F j, Y" }}</small>
                                 <div>
-                                    <a href="{% url 'edit_post' post.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                                    <!-- Edit Icon Button -->
+                                    <a href="{% url 'edit_post' post.pk %}" class="btn btn-warning btn-sm" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+
+                                    <!-- Delete Icon Button -->
                                     <form action="{% url 'delete_post' post.pk %}" method="post" style="display:inline;">
                                         {% csrf_token %}
-                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this post?');">
-                                            Delete
+                                        <button type="submit" class="btn btn-danger btn-sm" title="Delete" onclick="return confirm('Are you sure you want to delete this post?');">
+                                            <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </form>
                                 </div>

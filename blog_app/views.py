@@ -55,3 +55,8 @@ def edit_post(request, pk):
         form = PostForm(instance=post)
 
     return render(request, 'blog/post_form.html', {'form': form, 'post':post})
+
+# Post Details function
+def post_detail(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    return render(request, 'blog/post_detail.html', {'post': post})
