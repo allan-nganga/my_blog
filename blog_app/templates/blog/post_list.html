@@ -11,6 +11,11 @@
 </head>
 <body>
     <div class="container my-4">
+        <!-- Success Message Placeholder -->
+        <div id="success-message" class="alert alert-success d-none" role="alert">
+            <i class="fas fa-check-circle"></i> Post deleted successfully!
+        </div>
+
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1>Blog Posts</h1>
             <!-- Button to add a new post -->
@@ -28,7 +33,7 @@
                                 </h5>
                                 <p class="card-text">{{ post.content|truncatewords:20 }}</p>
                             </div>
-                            <div class="card-footer">
+                            <div class="card-footer d-flex justify-content-between">
                                 <small class="text-muted">By {{ post.author }} on {{ post.created_at|date:"F j, Y" }}</small>
                                 <div>
                                     <!-- Edit Icon Button -->
@@ -37,9 +42,9 @@
                                     </a>
 
                                     <!-- Delete Icon Button -->
-                                    <form action="{% url 'delete_post' post.pk %}" method="post" style="display:inline;">
+                                    <form action="{% url 'delete_post' post.pk %}" method="post" style="display:inline;" class="delete-form">
                                         {% csrf_token %}
-                                        <button type="submit" class="btn btn-danger btn-sm" title="Delete" onclick="return confirm('Are you sure you want to delete this post?');">
+                                        <button type="submit" class="btn btn-danger btn-sm" title="Delete" onclick="return confirmDelete();">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </form>
@@ -58,5 +63,35 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        // Function to confirm deletion and set a success message
+        function confirmDelete() {
+            if (confirm("Are you sure you want to delete this post?")) {
+                sessionStorage.setItem("deleteMessage", "Post deleted successfully!");  // Set message in session storage
+                return true;  // Proceed with form submission
+            }
+            return false;  // Cancel form submission
+        }
+
+        // Display the delete success message if it exists in session storage
+        document.addEventListener("DOMContentLoaded", function() {
+            const deleteMessage = sessionStorage.getItem("deleteMessage");
+            if (deleteMessage) {
+                // Display the message in the success message div
+                const successMessageDiv = document.getElementById("success-message");
+                successMessageDiv.classList.remove("d-none");
+                successMessageDiv.textContent = deleteMessage;
+
+                // Remove the message from session storage to prevent it from showing again
+                sessionStorage.removeItem("deleteMessage");
+
+                // Automatically hide the message after 3 seconds
+                setTimeout(() => {
+                    successMessageDiv.classList.add("d-none");
+                }, 3000);  // 3-second delay
+            }
+        });
+    </script>
 </body>
 </html>
