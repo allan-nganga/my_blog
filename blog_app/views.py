@@ -14,20 +14,20 @@ def new_post(request):
     if request.method == "POST":
         form = PostForm(request.POST)
         if form.is_valid():
-            # Save the post data to the database
-            post = Post(
-                title = form.cleaned_data['title'],
-                content = form.cleaned_data['content'],
-                author = request.user   # Assuming the user is logged in
-            )
+            post = form.save(commit=False)
+            post.author = request.user
             post.save()
-            return JsonResponse({"message": "Your post was created successfully!", "status": "success"}, status=200)
-            # return redirect('post_list')    # Redirect to the homepage after saving
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({"status": "success", "message": "Your post was created successfully!"})
+            messages.success(request, "Your post was created successfully!")
+            return redirect('post_detail', pk=post.pk)
         else:
-            return JsonResponse({"message": "There was an error with your submission.", "status":"error"}, status=400)
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({"status": "error", "message": "There was an error creating your post."})
+            messages.error(request, "There was an error creating your post.")
     else:
         form = PostForm()
-    return render(request, 'blog/post_form.html', {'form':form})
+    return render(request, 'blog/post_form.html', {'form': form})
 
 # Delete post Function
 def delete_post(request, pk):
@@ -42,19 +42,21 @@ def delete_post(request, pk):
 # Edit post function
 def edit_post(request, pk):
     post = get_object_or_404(Post, pk=pk)
-
-    if request.method == 'POST':
+    if request.method == "POST":
         form = PostForm(request.POST, instance=post)
         if form.is_valid():
             form.save()
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({"status": "success", "message": "The post has been updated successfully"})
             messages.success(request, "The post has been updated successfully")
-            return redirect('post_list')
+            return redirect('post_detail', pk=post.pk)
         else:
-            messages.error(request, "There was an error updating the post")
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({"status": "error", "message": "There was an error updating the post."})
+            messages.error(request, "There was an error updating the post.")
     else:
         form = PostForm(instance=post)
-
-    return render(request, 'blog/post_form.html', {'form': form, 'post':post})
+    return render(request, 'blog/post_form.html', {'form': form, 'post': post})
 
 # Post Details function
 def post_detail(request, pk):

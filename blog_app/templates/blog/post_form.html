@@ -35,7 +35,7 @@
 {% endif %}
 
         <h2>Create a New Post</h2>
-        <form method="post" novalidate>
+        <form method="post" novalidate id="postForm">
             {% csrf_token %}
             <div class="form-group">
                 {{ form.title.label_tag }}
@@ -51,7 +51,7 @@
                     <div class="text-danger">{{ form.content.errors }}</div>
                 {% endif %}
             </div>
-            <button type="submit" class="btn btn-primary">Save Post</button>
+            <button type="submit" class="btn btn-primary">{% if post %}Update{% else %}Save{% endif %} Post</button>
             <a href="{% url 'post_list' %}" class="btn btn-secondary">Cancel</a>
         </form>
     </div>
@@ -63,7 +63,7 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        const form = document.querySelector("form");
+        const form = document.querySelector("#postForm");
         const messageContainer = document.createElement("div");
         messageContainer.classList.add("alert", "custom-alert", "fade", "show");
         form.prepend(messageContainer);
@@ -73,8 +73,11 @@
 
             const formData = new FormData(form);
 
+            // Determine the correct URL based on whether we're creating or editing a post
+            const url = "{% if post %}{% url 'edit_post' post.pk %}{% else %}{% url 'new_post' %}{% endif %}";
+
             // Send form data using AJAX
-            fetch("{% url 'new_post' %}", {
+            fetch(url, {
                 method: "POST",
                 body: formData,
                 headers: {
