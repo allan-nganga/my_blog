@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib import messages
@@ -10,6 +11,7 @@ def post_list(request):
     return render(request, 'blog/post_list.html', {'posts':posts})
 
 # Function for new post
+@login_required
 def new_post(request):
     if request.method == "POST":
         form = PostForm(request.POST)
@@ -30,6 +32,7 @@ def new_post(request):
     return render(request, 'blog/post_form.html', {'form': form})
 
 # Delete post Function
+@login_required
 def delete_post(request, pk):
     post = get_object_or_404(Post, pk=pk)
 
@@ -40,6 +43,7 @@ def delete_post(request, pk):
     return render(request, 'blog/post_confirm_delete.html', {'post':post})
 
 # Edit post function
+@login_required
 def edit_post(request, pk):
     post = get_object_or_404(Post, pk=pk)
     if request.method == "POST":
@@ -59,6 +63,7 @@ def edit_post(request, pk):
     return render(request, 'blog/post_form.html', {'form': form, 'post': post})
 
 # Post Details function
+@login_required
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
     return render(request, 'blog/post_detail.html', {'post': post})

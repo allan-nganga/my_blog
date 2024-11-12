@@ -127,3 +127,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',   # Map 'error' level to Bootstrap's 'danger' class
 }
+
+LOGIN_REDIRECT_URL = 'post_list'  # Redirect to the homepage after login
+LOGOUT_REDIRECT_URL = 'post_list'  # Redirect to the homepage after logout
+LOGIN_URL = 'login'  # Redirect unauthenticated users to the login page
