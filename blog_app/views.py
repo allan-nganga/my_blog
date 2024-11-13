@@ -2,8 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib import messages
-from .models import Post
-from .forms import PostForm
+from .models import Post, Comment
+from .forms import PostForm, CommentForm
 
 # Create your views here.
 def post_list(request):
@@ -66,4 +66,19 @@ def edit_post(request, pk):
 @login_required
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
+    comments = post.comments.all()  # Retrieve all comments for this post
+
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post # Associate the comment with the current post
+            comment.save()
+            messages.success(request, "Your comment has been added!")
+            return redirect('post_detail', pk=post.pk)
+        else:
+            messages.error(request, "There was an error submitting your comment!")
+    else:
+        form = CommentForm()
+        
     return render(request, 'blog/post_detail.html', {'post': post})

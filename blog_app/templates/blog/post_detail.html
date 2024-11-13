@@ -13,6 +13,28 @@
         <p class="text-muted">By {{ post.author }} on {{ post.created_at|date:"F j, Y" }}</p>
         <hr>
         <p>{{ post.content }}</p>
+
+        <!-- Display Comments -->
+        <h3 class="mt-5">Comments</h3>
+        <ul class="list-unstyled">
+            {% for comment in comments %}
+                <li class="mb-4">
+                    <p><strong>{{ comment.name }}</strong> <small class="text-muted">{{ comment.created_at|date:"F j, Y, g:i a" }}</small></p>
+                    <p>{{ comment.content }}</p>
+                    <hr>
+                </li>
+            {% empty %}
+                <p>No comments yet. Be the first to comment!</p>
+            {% endfor %}
+        </ul>
+
+        <!-- Comment Form -->
+        <h4>Leave a Comment</h4>
+        <form method="post" action="{% url 'post_detail' post.pk %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Submit Comment</button>
+        </form>
         <a href="{% url 'post_list' %}" class="btn btn-primary mt-4">Back to All Posts</a>
     </div>
 
