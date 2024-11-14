@@ -30,11 +30,11 @@
 
         <!-- Comment Form -->
         <h4>Leave a Comment</h4>
-        <form method="post" action="{% url 'post_detail' post.pk %}">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Submit Comment</button>
-        </form>
+            <form method="post" action="{% url 'post_detail' post.pk %}">
+                {% csrf_token %}
+                {{ form }}
+                <button type="submit" class="btn btn-primary">Submit Comment</button>
+            </form>
         <a href="{% url 'post_list' %}" class="btn btn-primary mt-4">Back to All Posts</a>
     </div>
 
