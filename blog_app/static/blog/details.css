@@ -1,0 +1,15 @@
+/* Make the textarea visually appealing */
+textarea.form-control {
+    border: 2px solid #ced4da;  /* Use a subtle border */
+    border-radius: 10px;       /* Rounded corners */
+    background-color: #f9f9f9; /* Slightly off-white background */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    font-size: 1rem;           /* Larger text for better readability */
+}
+
+/* Highlight the textarea when focused */
+textarea.form-control:focus {
+    border-color: #007bff;  /* Blue border on focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a subtle glow */
+    background-color: #fff; /* White background when focused */
+}

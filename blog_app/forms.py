@@ -22,5 +22,12 @@ class CommentForm(forms.ModelForm):
         model = Comment
         fields = ['name', 'email', 'content']
         widgets = {
-            'content': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Enter your comment here....'}),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Your name'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Your email'}),
+            'content': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 5,
+                'placeholder': 'Enter your comment here...',
+                'style': 'resize: none;',  # Prevent resizing
+            }),
         }
